@@ -1,13 +1,10 @@
 
-
+#Representative subset of 10000 lines saved in test_file
 fileName <- "test_file"
-
 #Create file connection
 con <- file(fileName, "r")
-
 #Read all words
 d <- scan(con, character(0))
-
 # Close connection
 close(con)
 
@@ -25,7 +22,7 @@ words <- c()
 numbers <- c()
 puncts <- c()
 
-for (i in (1:100)){
+for (i in (1:10000)){
   
   element <- d[[i]]
   # exstract word 
@@ -42,7 +39,6 @@ for (i in (1:100)){
   
   # extract punctuation
   pun <- gsub("[^[:punct:]]", "", element)
-  print(element)
   if (nchar(pun) > 0){puncts <- c(puncts, pun)}
   
   

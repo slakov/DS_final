@@ -1,0 +1,100 @@
+---
+title: "Data Science Milestone"
+author: "NLP explorative analysis"
+output: html_document
+---
+
+We use HC corpora data collected across English Twitter posts. To get insight into Natural Language Processing and eventually construct a prediction algorithm for the next word during typing (e.g. auto-suggestions on mobile devices).
+
+The first step is to acquire and load the data. We obtain English Twitter files from Coursera Project webpage and in view of computational restrictions we choose a representative random subset of 10 thousand lines (using Linux sort -R command).
+
+First we load the text using the following R code.
+
+```{r}
+#Representative subset of 10000 lines saved in test_file
+fileName <- "test_file"
+#Create file connection
+con <- file(fileName, "r")
+#Read all words
+d <- scan(con, character(0))
+# Close connection
+close(con)
+```
+
+Next, we want to exclude profanity from the analysis. We created a text file with common English profanity words and load it into our R session.
+
+```{r}
+con <- file("bad_words", "r")
+bad <- scan(con, character(0))
+close(con)
+```
+
+For analysis we tokenize the text into words (excluding "bad" words), numbers and punctuation. We store those elements in 3 different vectors.
+
+```{r}
+d <- lapply(d, toupper)
+bad <- lapply(bad, toupper)
+words <- c(); numbers <- c(); puncts <- c()
+
+for (i in (1:50000)){
+  element <- d[[i]]
+  word <- gsub("[^A-Z]+", "", element)
+  good <-1
+  if (word %in% bad) {good <-0}
+  if ((word > 0)&good){words <- c(words, word)}
+  number <- gsub("[^0-9]+", "", element)
+  if (number > 0){numbers <- c(numbers, number)}
+  pun <- gsub("[^[:punct:]]", "", element)
+  if (nchar(pun) > 0){puncts <- c(puncts, pun)}
+}
+```
+
+An interesting question is: what are the ten most common words in the dataset?
+
+```{r, results='asis'}
+tab <- table(words)
+df <- as.data.frame(tab)
+names(df) <- c("word","times")
+df$rank <- rank(-df$times, ties.method="min")
+df <- df[order(df$rank,decreasing = F),]
+library(xtable)
+print(xtable(df[(1:10), c("word", "times")]), type="html", include.rownames=FALSE)
+```
+
+
+
+These are common English particles. Let us look at the most used "long" words (more than 6 letters):
+
+
+
+```{r, results='asis', echo=FALSE}
+tab <- table(words[which(nchar(words)>6)])
+df <- as.data.frame(tab)
+names(df) <- c("word","times")
+df$rank <- rank(-df$times, ties.method="min")
+df <- df[order(df$rank,decreasing = F),]
+library(xtable)
+print(xtable(df[(1:10), c("word", "times")]), type="html", include.rownames=FALSE)
+```
+
+
+To understand how many words constitute the major part of the language, we plot the hisotgramm of the frequencies of words.
+
+
+
+```{r, results='asis', echo=FALSE}
+tab <- table(words)
+df <- as.data.frame(tab)
+names(df) <- c("word","times")
+hist(df$times/sum(df$times)*100, 500, freq=F, xlim=c(0,0.1),
+     xlab="Word Frequency, %", main="Distribution of word frequencies")
+#d <- density(df$times/sum(df$times))
+#plot(d, xlim<-c(0,0.01))
+```
+
+We observe that most of the words have low (<5%) frequency.
+
+
+.
+.
+.
