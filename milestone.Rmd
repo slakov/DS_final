@@ -36,7 +36,7 @@ d <- lapply(d, toupper)
 bad <- lapply(bad, toupper)
 words <- c(); numbers <- c(); puncts <- c()
 
-for (i in (1:50000)){
+for (i in (1:100000)){
   element <- d[[i]]
   word <- gsub("[^A-Z]+", "", element)
   good <-1
@@ -86,7 +86,7 @@ To understand how many words constitute the major part of the language, we plot 
 tab <- table(words)
 df <- as.data.frame(tab)
 names(df) <- c("word","times")
-hist(df$times/sum(df$times)*100, 500, freq=F, xlim=c(0,0.1),
+hist(df$times/sum(df$times)*100, 10000, freq=F, xlim=c(0,0.05),
      xlab="Word Frequency, %", main="Distribution of word frequencies")
 #d <- density(df$times/sum(df$times))
 #plot(d, xlim<-c(0,0.01))
