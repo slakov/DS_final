@@ -2,13 +2,19 @@ library(shiny)
 
 shinyServer(function(input, output) {
   
-  if (nchar(input$text>1)){
-    output$text <- renderText({
-    paste("!!! ", nchar(input$text))
-    
+  output$text <- renderText({
+      paste("!!! ", w(input$text))
+      
   })
   
-  
-  
-  
 })
+
+
+w <- function(iStr){
+  out <- iStr
+  n <- out
+  
+  if (n == "42") { out = "Cosa"}
+  toupper(out)
+  
+}
